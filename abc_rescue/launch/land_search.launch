@@ -1,8 +1,20 @@
-<launch>
-    <include file="$(find tianbot_mini)/launch/bringup.launch" />
-    <include file="$(find tianbot_mini)/launch/lidar.launch" />
-    <include file="$(find tianbot_mini)/launch/amcl.launch" />
-    <!-- 加param  inflation 的参数修改-->
+<?xml version="1.0"?>
 
-    <!-- <param  -->
+<launch>
+
+    <!-- Include bringup.launch to start basic robot functionalities -->
+    <include file="$(find tianbot_mini)/launch/bringup.launch" />
+    <!-- Include lidar.launch to launch Lidar-related nodes -->
+    <include file="$(find tianbot_mini)/launch/lidar.launch" />
+    <!-- Include amcl.launch to launch Adaptive Monte Carlo Localization -->
+    <include file="$(find tianbot_mini)/launch/amcl.launch" >
+      <!-- Set initial pose values based on command line arguments -->
+      <arg name="initial_pose_x" value="$(arg x)"/>
+      <arg name="initial_pose_y" value="$(arg y)"/>
+      <arg name="initial_pose_a" value="$(arg a)"/>
+    </include>
+    <!-- Node to dynamically set inflation_layer/enabled to False -->
+    <node pkg="dynamic_reconfigure" type="dynparam" name="set_inflation_layer" args="set /tianbot_mini/move_base/global_costmap/inflation_layer enabled False" output="screen"/>
+  
 </launch>
+
